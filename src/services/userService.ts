@@ -28,3 +28,19 @@ export const verifyUser = async (user: DocumentType<User>, verificationCode: str
 
   return user
 }
+
+export const findUserByEmail = async (email: string) => {
+  const user = await UserModel.findOne({ email })
+
+  if (!user) throw new MyError('Invalid email or password', 400)
+
+  return user
+}
+
+export const validatePassword = async (user: DocumentType<User>, password: string) => {
+  if (!user.verified) throw new MyError('User account is not validate', 400)
+
+  const isValid = await user.validatePassword(password)
+
+  if (!isValid) throw new MyError('Invalid email or password', 400)
+}
