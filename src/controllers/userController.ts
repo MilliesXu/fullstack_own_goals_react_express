@@ -5,6 +5,7 @@ import { CreateUserInput, VerifyUserInput } from '../schemas/userSchema'
 import { createUser, findUserById, verifyUser } from '../services/userService'
 import sendEmail from '../utils/mailer'
 import { signInJWT } from '../utils/jwt'
+import { createSession } from '../services/sessionService'
 
 export const createUserHandler = async (req: Request<{}, {}, CreateUserInput>, res: Response, next: NextFunction) => {
   try {
@@ -34,8 +35,9 @@ export const verificationUserHandler = async (req: Request<VerifyUserInput>, res
 
     const user = await findUserById(id)
     const userVerified = await verifyUser(user, verificationCode)
-    const accessToken = signInJWT({ userId: userVerified._id }, 'ACCESS_TOKEN_PRIVATE')
-    const refreshToken = signInJWT({ userId: userVerified._id }, 'REFRESH_TOKEN_PRIVATE')
+    const session = await createSession(user._id)
+    const accessToken = signInJWT({ userId: userVerified._id, session: session._id }, 'ACCESS_TOKEN_PRIVATE')
+    const refreshToken = signInJWT({ userId: userVerified._id, session: session._id }, 'REFRESH_TOKEN_PRIVATE')
 
     return res.send({
       _id: userVerified._id,
