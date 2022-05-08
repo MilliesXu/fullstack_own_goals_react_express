@@ -1,4 +1,5 @@
 import { DocumentType } from '@typegoose/typegoose'
+import { nanoid } from 'nanoid'
 
 import { MyError } from '../middlewares/errorHandler'
 import UserModel, { User } from '../models/userModel'
@@ -52,4 +53,12 @@ export const updateUser = async (id: string, update: UpdateUserInput) => {
   if (!user) throw new MyError('Failed to update', 400)
 
   return user
+}
+
+export const setPasswordResetCode = async (user: DocumentType<User>) => {
+  const passwordResetCode = nanoid()
+  user.passwordResetCode = passwordResetCode
+  const userUpdated = await user.save()
+
+  return userUpdated
 }

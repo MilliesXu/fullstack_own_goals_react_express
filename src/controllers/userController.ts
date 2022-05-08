@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 
 import { MyError } from '../middlewares/errorHandler'
-import { CreateUserInput, VerifyUserInput, UpdateUserInput } from '../schemas/userSchema'
-import { createUser, findUserById, verifyUser, updateUser } from '../services/userService'
+import { CreateUserInput, VerifyUserInput, UpdateUserInput, RequestChangePasswordInput } from '../schemas/userSchema'
+import { createUser, findUserById, verifyUser, updateUser, findUserByEmail, setPasswordResetCode } from '../services/userService'
 import sendEmail from '../utils/mailer'
 import { signInJWT } from '../utils/jwt'
 import { createSession } from '../services/sessionService'
@@ -74,6 +74,27 @@ export const getUserHandler = async (req: Request, res: Response, next: NextFunc
     const user = await findUserById(res.locals.user.userId)
 
     res.send(omit(user.toJSON(), userPrivateFields))
+  } catch (error: any) {
+    next(new MyError(error.message, error.code))
+  }
+}
+
+export const requestChangePasswordHandler = async (req: Request<{}, {}, RequestChangePasswordInput>, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body
+    const user = await findUserByEmail(email)
+    const userUpdated = await setPasswordResetCode(user)
+
+    await sendEmail({
+      from: 'test@email.com',
+      to: userUpdated.email,
+      subject: 'Please verify your account',
+      text: `Password Reset Code ${userUpdated.passwordResetCode}, Id : ${userUpdated._id}`
+    })
+
+    return res.send({
+      successMessage: 'An email has been sent to your email address'
+    })
   } catch (error: any) {
     next(new MyError(error.message, error.code))
   }

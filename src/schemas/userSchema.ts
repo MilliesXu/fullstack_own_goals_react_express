@@ -44,6 +44,15 @@ export const updateUserSchema = object({
   })
 })
 
+export const requestChangePasswordSchema = object({
+  body: object({
+    email: string({
+      required_error: 'email is required'
+    }).email('email is not valid')
+  })
+})
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>['body']
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>['params']
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>['body']
+export type RequestChangePasswordInput = TypeOf<typeof requestChangePasswordSchema>['body']
