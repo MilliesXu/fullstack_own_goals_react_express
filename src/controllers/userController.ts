@@ -1,8 +1,22 @@
 import { Request, Response, NextFunction } from 'express'
 
 import { MyError } from '../middlewares/errorHandler'
-import { CreateUserInput, VerifyUserInput, UpdateUserInput, RequestChangePasswordInput } from '../schemas/userSchema'
-import { createUser, findUserById, verifyUser, updateUser, findUserByEmail, setPasswordResetCode } from '../services/userService'
+import {
+  CreateUserInput,
+  VerifyUserInput,
+  UpdateUserInput,
+  RequestChangePasswordInput,
+  ResetPasswordInput
+} from '../schemas/userSchema'
+import {
+  createUser,
+  findUserById,
+  verifyUser,
+  updateUser,
+  findUserByEmail,
+  setPasswordResetCode,
+  setPassword
+} from '../services/userService'
 import sendEmail from '../utils/mailer'
 import { signInJWT } from '../utils/jwt'
 import { createSession } from '../services/sessionService'
@@ -94,6 +108,22 @@ export const requestChangePasswordHandler = async (req: Request<{}, {}, RequestC
 
     return res.send({
       successMessage: 'An email has been sent to your email address'
+    })
+  } catch (error: any) {
+    next(new MyError(error.message, error.code))
+  }
+}
+
+export const resetPasswordHandler = async (req: Request<ResetPasswordInput['params'], {}, ResetPasswordInput['body']>, res: Response, next: NextFunction) => {
+  try {
+    const { id, passwordResetCode } = req.params
+    const { password } = req.body
+
+    const user = await findUserById(id)
+    await setPassword(user, passwordResetCode, password)
+
+    res.send({
+      successMessage: 'Your password has been changed'
     })
   } catch (error: any) {
     next(new MyError(error.message, error.code))

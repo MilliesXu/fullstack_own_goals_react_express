@@ -15,7 +15,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
   const code = isNumber(err.code) ? err.code : 500
 
   res.status(code).send({
-    erroMessage: message,
+    errorMessage: message,
     stack: process.env.NODE_ENV as string === 'development' ? err.stack : null
   })
 }

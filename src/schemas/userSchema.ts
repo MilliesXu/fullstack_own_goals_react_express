@@ -52,7 +52,26 @@ export const requestChangePasswordSchema = object({
   })
 })
 
+export const resetPasswordSchema = object({
+  params: object({
+    id: string(),
+    passwordResetCode: string()
+  }),
+  body: object({
+    password: string({
+      required_error: 'password is required'
+    }).min(6, 'password must be longer than 6 characters'),
+    passwordConfirmation: string({
+      required_error: 'passwordConfirmation is required'
+    })
+  }).refine((data) => data.password === data.passwordConfirmation, {
+    message: 'password must be match',
+    path: ['passwordConfirmation']
+  })
+})
+
 export type CreateUserInput = TypeOf<typeof createUserSchema>['body']
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>['params']
 export type UpdateUserInput = TypeOf<typeof updateUserSchema>['body']
 export type RequestChangePasswordInput = TypeOf<typeof requestChangePasswordSchema>['body']
+export type ResetPasswordInput = TypeOf<typeof resetPasswordSchema>

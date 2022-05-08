@@ -62,3 +62,17 @@ export const setPasswordResetCode = async (user: DocumentType<User>) => {
 
   return userUpdated
 }
+
+export const setPassword = async (user: DocumentType<User>, passwordResetCode: string, newPassword: string) => {
+  if (user.verified) {
+    if (user.passwordResetCode === passwordResetCode) {
+      user.password = newPassword
+      user.passwordResetCode = null
+      await user.save()
+    } else {
+      throw new MyError('Unable to change your password', 400)
+    }
+  } else {
+    throw new MyError('User is not verified', 401)
+  }
+}
