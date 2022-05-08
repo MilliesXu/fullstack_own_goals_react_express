@@ -1,12 +1,12 @@
 import { object, string, TypeOf } from 'zod'
 
-export const createuserSchema = object({
+export const createUserSchema = object({
   body: object({
     email: string({
       required_error: 'Email is required'
     }).email('Email is not valid'),
     firstname: string({
-      required_error: 'firsname is required'
+      required_error: 'firstname is required'
     }),
     lastname: string({
       required_error: 'lastname is required'
@@ -30,5 +30,20 @@ export const verifyUserSchema = object({
   })
 })
 
-export type CreateUserInput = TypeOf<typeof createuserSchema>['body']
+export const updateUserSchema = object({
+  body: object({
+    email: string({
+      required_error: 'Email is required'
+    }).email('Email is not valid'),
+    firstname: string({
+      required_error: 'firstname is required'
+    }),
+    lastname: string({
+      required_error: 'lastname is required'
+    })
+  })
+})
+
+export type CreateUserInput = TypeOf<typeof createUserSchema>['body']
 export type VerifyUserInput = TypeOf<typeof verifyUserSchema>['params']
+export type UpdateUserInput = TypeOf<typeof updateUserSchema>['body']

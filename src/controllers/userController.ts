@@ -1,11 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 
 import { MyError } from '../middlewares/errorHandler'
-import { CreateUserInput, VerifyUserInput } from '../schemas/userSchema'
-import { createUser, findUserById, verifyUser } from '../services/userService'
+import { CreateUserInput, VerifyUserInput, UpdateUserInput } from '../schemas/userSchema'
+import { createUser, findUserById, verifyUser, updateUser } from '../services/userService'
 import sendEmail from '../utils/mailer'
 import { signInJWT } from '../utils/jwt'
 import { createSession } from '../services/sessionService'
+import { omit } from 'lodash'
+import { userPrivateFields } from '../models/userModel'
 
 export const createUserHandler = async (req: Request<{}, {}, CreateUserInput>, res: Response, next: NextFunction) => {
   try {
@@ -48,6 +50,30 @@ export const verificationUserHandler = async (req: Request<VerifyUserInput>, res
       accessToken,
       refreshToken
     })
+  } catch (error: any) {
+    next(new MyError(error.message, error.code))
+  }
+}
+
+export const updateUserHandler = async (req: Request<{}, {}, UpdateUserInput>, res: Response, next: NextFunction) => {
+  try {
+    const body = req.body
+    const user = await findUserById(res.locals.user.userId)
+    const userUpdated = await updateUser(user._id, body)
+
+    res.send(omit(userUpdated.toJSON(), userPrivateFields))
+  } catch (error: any) {
+    if (error.code === 11000) next(new MyError('Email is already been used', 403))
+
+    next(new MyError(error.message, error.code))
+  }
+}
+
+export const getUserHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await findUserById(res.locals.user.userId)
+
+    res.send(omit(user.toJSON(), userPrivateFields))
   } catch (error: any) {
     next(new MyError(error.message, error.code))
   }

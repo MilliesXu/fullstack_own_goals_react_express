@@ -10,7 +10,7 @@ export class Session {
   @prop({ ref: () => User })
     user: Ref<User>
 
-  @prop({ type: Boolean, default: false })
+  @prop({ type: Boolean, default: true })
     valid: boolean
 }
 
