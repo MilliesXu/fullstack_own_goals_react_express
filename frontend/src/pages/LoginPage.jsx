@@ -2,7 +2,7 @@ import React from 'react'
 
 const LoginPage = () => {
   return (
-    <div className="grid place-items-center h-screen">
+    <div className="grid place-items-center h-[50vh]">
       <div className="w-full md:w-1/2">
         <form className="shadow-md rounded px-8 pt-6 pb-8 bg-gray-100">
           <div className="mb-4">
@@ -17,7 +17,6 @@ const LoginPage = () => {
             <button className="bg-blue-600 text-white p-2 px-5 font-bold text-lg hover:bg-blue-800" type="submit">Login</button>
             <button className="text-blue-500 p-2 px-5 font-bold text-lg hover:text-blue-800" type="button">Forgot Password?</button>
           </div>
-          
         </form>
       </div>
     </div>
