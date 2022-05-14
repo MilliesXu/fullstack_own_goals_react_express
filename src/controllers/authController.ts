@@ -16,14 +16,16 @@ export const createSessionHandler = async (req: Request<{}, {}, CreateSessionInp
     const accessToken = signInJWT({ userId: user._id, session: session._id }, 'ACCESS_TOKEN_PRIVATE')
     const refreshToken = signInJWT({ userId: user._id, session: session._id }, 'REFRESH_TOKEN_PRIVATE')
 
-    return res.send({
-      _id: user._id,
+    return res.cookie('accessToken', accessToken, {
+      secure: false,
+      httpOnly: true
+    }).cookie('refreshToken', refreshToken, {
+      secure: false,
+      httpOnly: true
+    }).send({
       firstname: user.firstname,
       lastname: user.lastname,
-      email: user.email,
-      verified: user.verified,
-      accessToken,
-      refreshToken
+      verified: user.verified
     })
   } catch (error: any) {
     next(new MyError(error.message, error.code))

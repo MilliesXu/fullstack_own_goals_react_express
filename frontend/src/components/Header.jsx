@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 
 const Header = () => {
   const [active, setActive] = useState(false)
+  const { user } = useSelector((state) => state.auth)
 
   return (
     <nav>
@@ -14,26 +16,33 @@ const Header = () => {
             </li>
           </ul>
           <ul className="hidden md:flex flex-row flex-start space-x-6">
-            <li>
-              <div className="font-bold hover:text-gray-600">
-                <Link to="/login">LOGIN</Link>
-              </div>
-            </li>
-            <li>
-              <div className="font-bold hover:text-gray-600">
-                <Link to="/register">REGISTER</Link>
-              </div>
-            </li>
-            <li>
-              <div className="font-bold hover:text-gray-600">
-                <Link to="/user">NAME</Link>
-              </div>
-            </li>
-            <li>
-              <div className="font-bold hover:text-gray-600">
-                <Link to="/logout">LOGOUT</Link>
-              </div>
-            </li>
+            { user ? (
+              <>
+                <li>
+                  <div className="font-bold hover:text-gray-600">
+                    <Link to="/user">{`${user.firstname} ${user.lastname}`}</Link>
+                  </div>
+                </li>
+                <li>
+                  <div className="font-bold hover:text-gray-600">
+                    <Link to="/logout">LOGOUT</Link>
+                  </div>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <div className="font-bold hover:text-gray-600">
+                    <Link to="/login">LOGIN</Link>
+                  </div>
+                </li>
+                <li>
+                  <div className="font-bold hover:text-gray-600">
+                    <Link to="/register">REGISTER</Link>
+                  </div>
+                </li>
+              </>
+            ) }
           </ul>
 
           <button className="block hamburger md:hidden" onClick={() => setActive(!active)}>

@@ -4,14 +4,18 @@
   "description": "Express goal with typescript",
   "main": "index.js",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+    "server": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Erwin Xu",
   "license": "MIT",
   "dependencies": {
     "@typegoose/typegoose": "^9.8.1",
+    "@types/cors": "^2.8.12",
     "@types/nodemailer": "^6.4.4",
     "argon2": "^0.28.5",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
     "jsonwebtoken": "^8.5.1",
@@ -29,6 +33,7 @@
     "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
+    "concurrently": "^7.1.0",
     "eslint": "^8.14.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
