@@ -32,7 +32,7 @@ export const createUserHandler = async (req: Request<{}, {}, CreateUserInput>, r
       from: 'test@email.com',
       to: user.email,
       subject: 'Please verify your account',
-      text: `Verification Code ${user.verificationCode}, Id : ${user._id}`
+      text: `http://127.0.0.1:3000/verify/${user._id}/${user.verificationCode}`
     })
 
     return res.send({

@@ -56,7 +56,7 @@ const RegisterPage = () => {
     if (user) {
       navigate('/')
     }
-  })
+  }, [user, navigate, dispatch, isSuccess, isError, errorMessage, successMessage])
 
   return (
     <div className="grid place-items-center h-[85vh]">
