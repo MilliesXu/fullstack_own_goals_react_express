@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { loginService, registerService, verifyService } from './authService'
+import { loginService, logoutService, registerService, verifyService } from './authService'
 
 const user = JSON.parse(localStorage.getItem('user'))
 
@@ -35,12 +35,23 @@ export const register = createAsyncThunk('auth/register', async (user, thunkAPI)
   }
 })
 
+export const logout = createAsyncThunk('auth/logout', async (thunkAPI) => {
+  try {
+    return await logoutService()
+  } catch (error) {
+    const message = error.response.data.errorMessage
+
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
 // verify user
 export const verify = createAsyncThunk('auth/verify', async (user, thunkAPI) => {
   try {
     return await verifyService(user)
   } catch (error) {
     const message = error.response.data.errorMessage
+
     return thunkAPI.rejectWithValue(message);
   }
 })
@@ -110,6 +121,23 @@ export const authSlice = createSlice({
         state.errorMessage = action.payload
         state.successMessage = ''
         state.user = null
+      })
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(logout.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.isSuccess = true
+        state.isError = false
+        state.user = null
+        state.successMessage = action.payload
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.isSuccess = false
+        state.errorMessage = action.payload
+        state.successMessage = ''
       })
   }
 })

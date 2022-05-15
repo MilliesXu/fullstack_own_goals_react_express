@@ -4,7 +4,7 @@ import { MyError } from '../middlewares/errorHandler'
 import { CreateSessionInput } from '../schemas/authSchema'
 import { findUserByEmail, validatePassword } from '../services/userService'
 import { signInJWT } from '../utils/jwt'
-import { createSession } from '../services/sessionService'
+import { createSession, deleteSession, findSessionWithId } from '../services/sessionService'
 
 export const createSessionHandler = async (req: Request<{}, {}, CreateSessionInput>, res: Response, next: NextFunction) => {
   try {
@@ -16,17 +16,35 @@ export const createSessionHandler = async (req: Request<{}, {}, CreateSessionInp
     const accessToken = signInJWT({ userId: user._id, session: session._id }, 'ACCESS_TOKEN_PRIVATE')
     const refreshToken = signInJWT({ userId: user._id, session: session._id }, 'REFRESH_TOKEN_PRIVATE')
 
-    return res.cookie('accessToken', accessToken, {
+    res.cookie('accessToken', accessToken, {
       secure: false,
       httpOnly: true
-    }).cookie('refreshToken', refreshToken, {
+    })
+    res.cookie('refreshToken', refreshToken, {
       secure: false,
       httpOnly: true
-    }).send({
+    })
+    return res.send({
       firstname: user.firstname,
       lastname: user.lastname,
       verified: user.verified
     })
+  } catch (error: any) {
+    next(new MyError(error.message, error.code))
+  }
+}
+
+export const deleteSessionHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const sessionId = res.locals.user.session
+    const session = await findSessionWithId(sessionId)
+    await deleteSession(session)
+
+    return res.clearCookie('accessToken')
+      .clearCookie('refreshToken')
+      .send({
+        successMessage: 'You have logged out'
+      })
   } catch (error: any) {
     next(new MyError(error.message, error.code))
   }

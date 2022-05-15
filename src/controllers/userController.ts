@@ -55,13 +55,15 @@ export const verificationUserHandler = async (req: Request<VerifyUserInput>, res
     const accessToken = signInJWT({ userId: userVerified._id, session: session._id }, 'ACCESS_TOKEN_PRIVATE')
     const refreshToken = signInJWT({ userId: userVerified._id, session: session._id }, 'REFRESH_TOKEN_PRIVATE')
 
-    return res.cookie('accessToken', accessToken, {
+    res.cookie('accessToken', accessToken, {
       secure: false,
       httpOnly: true
-    }).cookie('refreshToken', refreshToken, {
+    })
+    res.cookie('refreshToken', refreshToken, {
       secure: false,
       httpOnly: true
-    }).send({
+    })
+    return res.send({
       firstname: user.firstname,
       lastname: user.lastname,
       verified: user.verified

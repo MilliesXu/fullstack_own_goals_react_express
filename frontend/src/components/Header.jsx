@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
+
+import { logout } from '../features/auth/authSlice';
 
 const Header = () => {
   const [active, setActive] = useState(false)
   const { user } = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+
+  const logoutHandler = () => {
+    dispatch(logout())
+  }
 
   return (
     <nav>
@@ -24,8 +31,8 @@ const Header = () => {
                   </div>
                 </li>
                 <li>
-                  <div className="font-bold hover:text-gray-600">
-                    <Link to="/logout">LOGOUT</Link>
+                  <div className="font-bold hover:text-gray-600 hover:cursor-pointer" onClick={logoutHandler}>
+                    LOGOUT
                   </div>
                 </li>
               </>

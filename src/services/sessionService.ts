@@ -1,5 +1,7 @@
+import { DocumentType } from '@typegoose/typegoose'
+
 import { MyError } from '../middlewares/errorHandler'
-import SessionModel from '../models/sessionModel'
+import SessionModel, { Session } from '../models/sessionModel'
 
 export const createSession = async (userId: string) => {
   let session = await SessionModel.findOne({ user: userId })
@@ -15,4 +17,10 @@ export const findSessionWithId = async (id: string) => {
   if (!session) throw new MyError('Unauthorized', 401)
 
   return session
+}
+
+export const deleteSession = async (session: DocumentType<Session>) => {
+  session.valid = false
+
+  return await session.save()
 }

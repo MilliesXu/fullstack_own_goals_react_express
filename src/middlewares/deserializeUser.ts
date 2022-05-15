@@ -3,7 +3,7 @@ import { verifyJWT } from '../utils/jwt'
 import { MyError } from './errorHandler'
 
 const deserializerUser = async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = (req.headers.authorization || '').replace(/^Bearer\s/, '')
+  const { accessToken } = req.cookies
 
   if (!accessToken) next(new MyError('Unauthorized', 401))
 
