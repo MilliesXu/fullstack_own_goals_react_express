@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 
 import { logout } from '../features/auth/authSlice';
+import { resetProfile } from "../features/profile/profileSlice";
 
 const Header = () => {
   const [active, setActive] = useState(false)
@@ -11,6 +12,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     dispatch(logout())
+    dispatch(resetProfile())
   }
 
   return (
@@ -27,7 +29,7 @@ const Header = () => {
               <>
                 <li>
                   <div className="font-bold hover:text-gray-600">
-                    <Link to="/user">{`${user.firstname} ${user.lastname}`}</Link>
+                    <Link to="/profile">{`${user.firstname} ${user.lastname}`}</Link>
                   </div>
                 </li>
                 <li>
