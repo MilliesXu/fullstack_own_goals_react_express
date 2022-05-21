@@ -42,7 +42,7 @@ const LoginPage = () => {
       dispatch(reset())
     }
 
-    if (user !== null) {
+    if (user.verified !== false) {
       navigate('/')
     }
   }, [user, isSuccess, isError, errorMessage, navigate, dispatch])

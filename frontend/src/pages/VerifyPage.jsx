@@ -17,7 +17,7 @@ const VerifyPage = () => {
       const messages = errorMessage.split(',')
 
       messages.map(message => toast.error(message))
-    } else if (user !== null) {
+    } else if (user.verified === false) {
       navigate('/')
     } else {
       const user = {

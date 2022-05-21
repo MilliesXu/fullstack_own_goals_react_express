@@ -4,7 +4,7 @@ import { MyError } from '../middlewares/errorHandler'
 import SessionModel, { Session } from '../models/sessionModel'
 
 export const createSession = async (userId: string) => {
-  let session = await SessionModel.findOne({ user: userId })
+  let session = await SessionModel.findOne({ user: userId, valid: true })
 
   if (!session) session = await SessionModel.create({ user: userId })
 

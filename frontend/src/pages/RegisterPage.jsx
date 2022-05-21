@@ -53,7 +53,7 @@ const RegisterPage = () => {
       toast.success(message)
     }
 
-    if (user) {
+    if (user.firstname !== '' || user.verified !== false) {
       navigate('/')
     }
   }, [user, navigate, dispatch, isSuccess, isError, errorMessage, successMessage])

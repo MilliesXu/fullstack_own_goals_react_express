@@ -5,7 +5,11 @@ import { loginService, logoutService, registerService, verifyService } from './a
 const user = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
-  user: user ? user : null,
+  user: user ? user : {
+    firstname: '',
+    lastname: '',
+    verified: false
+  },
   isLoading: false,
   isError: false,
   isSuccess: false,
@@ -60,13 +64,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    reset: (state) => {
-      state.isLoading = false
-      state.isSuccess = false
-      state.isError = false
-      state.errorMessage = ''
-      state.successMessage = ''
-    }
+    reset: (state) => initialState
   },
   extraReducers: (builder) => {
     builder
@@ -84,7 +82,11 @@ export const authSlice = createSlice({
         state.isSuccess = false
         state.isError = true
         state.errorMessage = action.payload
-        state.user = null
+        state.user = user ? user : {
+          firstname: '',
+          lastname: '',
+          verified: false
+        }
       })
       .addCase(register.pending, (state) => {
         state.isLoading = true
@@ -95,14 +97,22 @@ export const authSlice = createSlice({
         state.isError = false
         state.successMessage = action.payload
         state.errorMessage = ''
-        state.user = null
+        state.user = user ? user : {
+          firstname: '',
+          lastname: '',
+          verified: false
+        }
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false
         state.isSuccess = false
         state.isError = true
         state.errorMessage = action.payload
-        state.user = null
+        state.user = user ? user : {
+          firstname: '',
+          lastname: '',
+          verified: false
+        }
       })
       .addCase(verify.pending, (state) => {
         state.isLoading = true
@@ -120,7 +130,11 @@ export const authSlice = createSlice({
         state.isSuccess = false
         state.errorMessage = action.payload
         state.successMessage = ''
-        state.user = null
+        state.user = user ? user : {
+          firstname: '',
+          lastname: '',
+          verified: false
+        }
       })
       .addCase(logout.pending, (state) => {
         state.isLoading = true
@@ -129,7 +143,11 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.isSuccess = true
         state.isError = false
-        state.user = null
+        state.user = user ? user : {
+          firstname: '',
+          lastname: '',
+          verified: false
+        }
         state.successMessage = action.payload
       })
       .addCase(logout.rejected, (state, action) => {

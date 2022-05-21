@@ -1,4 +1,5 @@
 import axios from 'axios'
+import axiosInstance from '../../utils/axiosInstace'
 
 export const loginService = async (userData) => {
   const response = await axios.post('api/session/', userData)
@@ -27,7 +28,7 @@ export const verifyService = async (user) => {
 }
 
 export const logoutService = async () => {
-  const response = await axios.delete('api/session/', { withCredentials: true })
+  const response = await axiosInstance.delete('session/', { withCredentials: true })
 
   if (response.data) {
     localStorage.removeItem('user')

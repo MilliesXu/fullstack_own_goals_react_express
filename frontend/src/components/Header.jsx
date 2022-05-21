@@ -25,7 +25,7 @@ const Header = () => {
             </li>
           </ul>
           <ul className="hidden md:flex flex-row flex-start space-x-6">
-            { user ? (
+            { user.verified !== false ? (
               <>
                 <li>
                   <div className="font-bold hover:text-gray-600">

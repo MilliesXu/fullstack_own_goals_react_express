@@ -9,7 +9,7 @@ const Dashboard = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (user === null) {
+    if (user.verified === false) {
       navigate('/login')
     }
   }, [user, navigate])

@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from 'express'
 import { MyError } from '../middlewares/errorHandler'
 import { CreateSessionInput } from '../schemas/authSchema'
 import { findUserByEmail, validatePassword } from '../services/userService'
-import { signInJWT } from '../utils/jwt'
+import { signInJWT, verifyJWT } from '../utils/jwt'
 import { createSession, deleteSession, findSessionWithId } from '../services/sessionService'
 
 export const createSessionHandler = async (req: Request<{}, {}, CreateSessionInput>, res: Response, next: NextFunction) => {
@@ -47,5 +47,32 @@ export const deleteSessionHandler = async (req: Request, res: Response, next: Ne
       })
   } catch (error: any) {
     next(new MyError(error.message, error.code))
+  }
+}
+
+export const recreateAccessTokenHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { refreshToken } = req.cookies
+
+    const decoded = verifyJWT<{ session: string }>(refreshToken, 'REFRESH_TOKEN_PUBLIC')
+
+    if (!decoded) {
+      throw new MyError('Unauthorized', 401)
+    }
+
+    const sessionId = decoded.session
+    const session = await findSessionWithId(sessionId)
+
+    if (session.valid) {
+      const accessToken = signInJWT({ userId: session.user, session: session._id }, 'ACCESS_TOKEN_PRIVATE')
+      res.cookie('accessToken', accessToken, {
+        secure: false,
+        httpOnly: true
+      })
+    }
+
+    return res.send()
+  } catch (error: any) {
+    return res.send()
   }
 }
