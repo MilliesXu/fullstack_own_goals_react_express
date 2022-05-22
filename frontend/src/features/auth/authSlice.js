@@ -60,6 +60,17 @@ export const verify = createAsyncThunk('auth/verify', async (user, thunkAPI) => 
   }
 })
 
+// reload user
+export const reload = createAsyncThunk('auth/reload', async (thunkAPI) => {
+  try {
+    return await JSON.parse(localStorage.getItem('user'))
+  } catch (error) {
+    const message = error.response.data.errorMessage
+
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -156,6 +167,25 @@ export const authSlice = createSlice({
         state.isSuccess = false
         state.errorMessage = action.payload
         state.successMessage = ''
+      })
+      .addCase(reload.pending, (state) => {
+        state.isLoading = true
+      })
+      .addCase(reload.fulfilled, (state, action) => {
+        state.isLoading = false
+        state.user = action.payload
+      })
+      .addCase(reload.rejected, (state, action) => {
+        state.isLoading = false
+        state.isError = true
+        state.isSuccess = false
+        state.errorMessage = action.payload
+        state.successMessage = ''
+        state.user = user ? user : {
+          firstname: '',
+          lastname: '',
+          verified: false
+        }
       })
   }
 })

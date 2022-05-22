@@ -1,19 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 
 import { logout } from '../features/auth/authSlice';
 import { resetProfile } from "../features/profile/profileSlice";
+import { reload } from '../features/auth/authSlice';
 
 const Header = () => {
   const [active, setActive] = useState(false)
   const { user } = useSelector((state) => state.auth)
+  const { profile } = useSelector((state) => state.profile) 
   const dispatch = useDispatch()
 
   const logoutHandler = () => {
     dispatch(logout())
     dispatch(resetProfile())
   }
+
+  useEffect(() => {
+    if (user.firstname !== profile.firstname || user.lastname !== profile.lastname) {
+      dispatch(reload())
+    }
+  }, [user, profile, dispatch])
 
   return (
     <nav>
