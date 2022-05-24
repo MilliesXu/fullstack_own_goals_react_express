@@ -18,8 +18,14 @@ const Header = () => {
   }
 
   useEffect(() => {
-    if (user.firstname !== profile.firstname || user.lastname !== profile.lastname) {
-      dispatch(reload())
+    if (profile.firstname !== '' && profile.lastname !== '') {
+      if (user.firstname !== profile.firstname || user.lastname !== profile.lastname) {
+        dispatch(reload({
+          firstname: profile.firstname,
+          lastname: profile.lastname,
+          verified: user.verified
+        }))
+      }
     }
   }, [user, profile, dispatch])
 

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { getGoalsService } from "./goalService"
 
+
 const initialState = {
   goals: [],
   isSuccess: false,

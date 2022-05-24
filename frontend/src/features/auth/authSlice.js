@@ -61,9 +61,9 @@ export const verify = createAsyncThunk('auth/verify', async (user, thunkAPI) => 
 })
 
 // reload user
-export const reload = createAsyncThunk('auth/reload', async (thunkAPI) => {
+export const reload = createAsyncThunk('auth/reload', async (user, thunkAPI) => {
   try {
-    return await JSON.parse(localStorage.getItem('user'))
+    return user
   } catch (error) {
     const message = error.response.data.errorMessage
 
@@ -154,7 +154,7 @@ export const authSlice = createSlice({
         state.isLoading = false
         state.isSuccess = true
         state.isError = false
-        state.user = user ? user : {
+        state.user = {
           firstname: '',
           lastname: '',
           verified: false
