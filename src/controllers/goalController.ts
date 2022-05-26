@@ -8,9 +8,10 @@ export const createGoalHandler = async (req: Request<{}, {}, CreateGoalInput>, r
   try {
     const body = req.body
     const userId = res.locals.user.userId
-    await createGoal(body, userId)
+    const goal = await createGoal(body, userId)
 
     res.send({
+      goal,
       successMessage: 'Successfully create goal'
     })
   } catch (error: any) {

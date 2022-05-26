@@ -5,3 +5,9 @@ export const getGoalsService = async () => {
 
   return response.data
 }
+
+export const createGoalService = async (goal) => {
+  const response = await axiosInstance.post('goals', goal, { withCredentials: true })
+
+  return response.data
+}

@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import { toast } from "react-toastify";
 
 import GoalItem from '../components/GoalItem'
+import GoalForm from '../components/GoalForm';
 import Spinner from '../components/Spinner'
 import { getGoals } from '../features/goal/goalSlice'
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth)
-  const { goals, isLoading, isError, errorMessage, isSuccess } = useSelector((state) => state.goals)
+  const { goals, isLoading, isError, errorMessage, isSuccess, successMessage } = useSelector((state) => state.goals)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -27,16 +28,20 @@ const Dashboard = () => {
     if (!isSuccess) {
       if (goals.length === 0) {
         dispatch(getGoals())
-      }  
+      }
     }
 
-  }, [user, navigate, goals, dispatch, isError, errorMessage, isSuccess])
+  }, [user, navigate, goals, dispatch, isError, errorMessage, isSuccess, successMessage])
 
   return (
     <div className="px-8">
        { isLoading === true ? <Spinner /> : (
-      <GoalItem text='This is text' />
+         goals.map(goal => (
+          <GoalItem key={goal._id} text={goal.text} />
+         ))
        )}
+
+       <GoalForm />
   </div>
   )
 }
