@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, Suspense } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify";
@@ -7,7 +7,7 @@ import Spinner from "../components/Spinner"
 import { verify } from "../features/auth/authSlice";
 
 const VerifyPage = () => {
-  const { user, isLoading, isError, errorMessage } = useSelector((state) => state.auth)
+  const { user, isError, errorMessage } = useSelector((state) => state.auth)
   const { id, verificationCode } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -30,7 +30,7 @@ const VerifyPage = () => {
   
   return (
     <div className="grid place-items-center h-[50vh]">
-      { isLoading && <Spinner /> }
+      <Suspense fallback={<Spinner />} />
     </div>
   )
 }

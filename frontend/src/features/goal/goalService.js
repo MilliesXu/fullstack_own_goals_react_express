@@ -11,3 +11,9 @@ export const createGoalService = async (goal) => {
 
   return response.data
 }
+
+export const deleteGoalService = async (id) => {
+  const response = await axiosInstance.delete(`goals/${id}`, { withCredentials: true })
+
+  return response.data
+}

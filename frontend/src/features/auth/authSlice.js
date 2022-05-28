@@ -10,7 +10,6 @@ const initialState = {
     lastname: '',
     verified: false
   },
-  isLoading: false,
   isError: false,
   isSuccess: false,
   successMessage: '',
@@ -79,17 +78,12 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state) => {
-        state.isLoading = true
-      })
       .addCase(login.fulfilled, (state, action) => {
-        state.isLoading = false
         state.isSuccess = true
         state.isError = false
         state.user = action.payload
       })
       .addCase(login.rejected, (state, action) => {
-        state.isLoading = false
         state.isSuccess = false
         state.isError = true
         state.errorMessage = action.payload
@@ -99,11 +93,7 @@ export const authSlice = createSlice({
           verified: false
         }
       })
-      .addCase(register.pending, (state) => {
-        state.isLoading = true
-      })
       .addCase(register.fulfilled, (state, action) => {
-        state.isLoading = false
         state.isSuccess = true
         state.isError = false
         state.successMessage = action.payload
@@ -115,7 +105,6 @@ export const authSlice = createSlice({
         }
       })
       .addCase(register.rejected, (state, action) => {
-        state.isLoading = false
         state.isSuccess = false
         state.isError = true
         state.errorMessage = action.payload
@@ -125,18 +114,13 @@ export const authSlice = createSlice({
           verified: false
         }
       })
-      .addCase(verify.pending, (state) => {
-        state.isLoading = true
-      })
       .addCase(verify.fulfilled, (state, action) => {
-        state.isLoading = false
         state.isSuccess = true
         state.isError = false
         state.user = action.payload
         state.successMessage = ''
       })
       .addCase(verify.rejected, (state, action) => {
-        state.isLoading = false
         state.isError = true
         state.isSuccess = false
         state.errorMessage = action.payload
@@ -147,11 +131,7 @@ export const authSlice = createSlice({
           verified: false
         }
       })
-      .addCase(logout.pending, (state) => {
-        state.isLoading = true
-      })
       .addCase(logout.fulfilled, (state, action) => {
-        state.isLoading = false
         state.isSuccess = true
         state.isError = false
         state.user = {
@@ -162,21 +142,15 @@ export const authSlice = createSlice({
         state.successMessage = action.payload
       })
       .addCase(logout.rejected, (state, action) => {
-        state.isLoading = false
         state.isError = true
         state.isSuccess = false
         state.errorMessage = action.payload
         state.successMessage = ''
       })
-      .addCase(reload.pending, (state) => {
-        state.isLoading = true
-      })
       .addCase(reload.fulfilled, (state, action) => {
-        state.isLoading = false
         state.user = action.payload
       })
       .addCase(reload.rejected, (state, action) => {
-        state.isLoading = false
         state.isError = true
         state.isSuccess = false
         state.errorMessage = action.payload

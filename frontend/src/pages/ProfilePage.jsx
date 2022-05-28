@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
 import { toast } from "react-toastify";
@@ -7,7 +7,7 @@ import Spinner from '../components/Spinner'
 import { getProfile, updateProfile } from '../features/profile/profileSlice'
 
 const ProfilePage = () => {
-  const { profile, isLoading, isError, errorMessage } = useSelector((state) => state.profile)
+  const { profile, isError, errorMessage } = useSelector((state) => state.profile)
   const { user } = useSelector((state) => state.auth)
   const [formData, setFormData] = useState({
     ...profile
@@ -52,8 +52,8 @@ const ProfilePage = () => {
   }, [dispatch, isError, errorMessage, navigate, user, profile])
 
   return (
-    <div className="grid place-items-center h-[85vh]">
-      { isLoading === true ? <Spinner /> : (
+    <Suspense fallback={<Spinner />}>
+      <div className="grid place-items-center h-[85vh]">
         <div className="w-full md:w-1/2">
           <form className="shadow-md rounded px-8 pt-6 pb-8 bg-gray-100" onSubmit={onSubmit}>
             <div className="mb-4">
@@ -74,8 +74,8 @@ const ProfilePage = () => {
             </div>
           </form>
         </div>
-      ) }
-    </div>
+      </div>
+    </Suspense>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import { getGoals } from '../features/goal/goalSlice'
 
 const Dashboard = () => {
   const { user } = useSelector((state) => state.auth)
-  const { goals, isLoading, isError, errorMessage, isSuccess, successMessage } = useSelector((state) => state.goals)
+  const { goals, isError, errorMessage, isSuccess, successMessage } = useSelector((state) => state.goals)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -34,15 +34,16 @@ const Dashboard = () => {
   }, [user, navigate, goals, dispatch, isError, errorMessage, isSuccess, successMessage])
 
   return (
+    <Suspense fallback={<Spinner />} >
     <div className="px-8">
-       { isLoading === true ? <Spinner /> : (
-         goals.map(goal => (
-          <GoalItem key={goal._id} text={goal.text} />
-         ))
-       )}
+        { goals.map(goal => (
+            <GoalItem key={goal._id} text={goal.text} id={goal._id} />
+          ))
+        }
 
-       <GoalForm />
-  </div>
+        <GoalForm />
+    </div>
+  </Suspense>
   )
 }
 

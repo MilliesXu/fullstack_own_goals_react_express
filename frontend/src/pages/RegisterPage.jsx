@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { toast } from "react-toastify";
@@ -15,7 +15,7 @@ const RegisterPage = () => {
     passwordConfirmation: ''
   })
   const { firstname, lastname, email, password, passwordConfirmation } = formData
-  const { user, isSuccess, isError, successMessage, errorMessage, isLoading } = useSelector((state) => state.auth)
+  const { user, isSuccess, isError, successMessage, errorMessage } = useSelector((state) => state.auth)
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -59,8 +59,8 @@ const RegisterPage = () => {
   }, [user, navigate, dispatch, isSuccess, isError, errorMessage, successMessage])
 
   return (
-    <div className="grid place-items-center h-[85vh]">
-      { isLoading ? <Spinner /> : (
+    <Suspense fallback={<Spinner />}>
+      <div className="grid place-items-center h-[85vh]">
         <div className="w-full md:w-1/2">
           <form className="shadow-md rounded px-8 pt-6 pb-8 bg-gray-100" onSubmit={onSubmit}>
             <div className="mb-4">
@@ -89,8 +89,8 @@ const RegisterPage = () => {
             </div>
           </form>
         </div>
-      ) }
-    </div>
+      </div>
+    </Suspense>
   )
 }
 

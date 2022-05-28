@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { getProfileService, updateProfileService } from "./profileService"
+import { reload } from '../auth/authSlice';
 
 const initialState = {
   profile: {
@@ -7,22 +8,25 @@ const initialState = {
     lastname: '',
     email: ''
   },
-  isLoading: false,
   isSuccess: false,
   isError: false,
   errorMessage: ''
 }
 
 // get profile
-export const getProfile = createAsyncThunk('profile/get', async (thunkAPI) => {
+export const getProfile = createAsyncThunk('profile/get', async (thunkAPI, { dispatch }) => {
   try {
     return await getProfileService()
   } catch (error) {
     
     if (error.response.status === 401) {
       localStorage.removeItem('user')
+      dispatch(reload({
+        firstname: '',
+        lastname: '',
+        verified: false
+      }))
     }
-
     const message = error.response.data.errorMessage
 
     return thunkAPI.rejectWithValue(message);
@@ -30,10 +34,19 @@ export const getProfile = createAsyncThunk('profile/get', async (thunkAPI) => {
 })
 
 // update profile
-export const updateProfile = createAsyncThunk('profile/update', async (user, thunkAPI) => {
+export const updateProfile = createAsyncThunk('profile/update', async (user, { dispatch, thunkAPI }) => {
   try {
     return await updateProfileService(user)
   } catch (error) {
+    if (error.response.status === 401) {
+      localStorage.removeItem('user')
+      dispatch(reload({
+        firstname: '',
+        lastname: '',
+        verified: false
+      }))
+    }
+
     const message = error.response.data.errorMessage
 
     return thunkAPI.rejectWithValue(message);
@@ -48,10 +61,6 @@ export const profileSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(getProfile.pending, (state) => {
-      state.isLoading = true
-      state.errorMessage = ''
-    })
     .addCase(getProfile.fulfilled, (state, action) => {
       state.isLoading = false
       state.isSuccess = true
@@ -61,9 +70,6 @@ export const profileSlice = createSlice({
       state.isLoading = false
       state.isError = true
       state.errorMessage = action.payload
-    })
-    .addCase(updateProfile.pending, (state) => {
-      state.isLoading = true
     })
     .addCase(updateProfile.fulfilled, (state, action) => {
       state.isLoading = false
