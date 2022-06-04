@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-import { loginService, logoutService, registerService, verifyService } from './authService'
+import { loginService, logoutService, registerService, verifyService, requestResetPasswordService, resetPasswordService } from './authService'
 
 const user = JSON.parse(localStorage.getItem('user'))
 
@@ -63,6 +63,29 @@ export const verify = createAsyncThunk('auth/verify', async (user, thunkAPI) => 
 export const reload = createAsyncThunk('auth/reload', async (user, thunkAPI) => {
   try {
     return user
+  } catch (error) {
+    const message = error.response.data.errorMessage
+
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
+
+// Request change password
+export const requestChangePassword = createAsyncThunk('auth/requestChangePassword', async (data, thunkAPI) => {
+  try {
+    return await requestResetPasswordService(data)
+  } catch (error) {
+    const message = error.response.data.errorMessage
+
+    return thunkAPI.rejectWithValue(message);
+  }
+})
+
+// Reset Password
+export const resetPassword = createAsyncThunk('auth/resetPassword', async (data, thunkAPI) => {
+  try {
+    return await resetPasswordService(data)
   } catch (error) {
     const message = error.response.data.errorMessage
 
@@ -160,6 +183,22 @@ export const authSlice = createSlice({
           lastname: '',
           verified: false
         }
+      })
+      .addCase(requestChangePassword.fulfilled, (state, action) => {
+        state.isSuccess = true
+        state.successMessage = action.payload
+      })
+      .addCase(requestChangePassword.rejected, (state, action) => {
+        state.isError = true
+        state.errorMessage = action.payload
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.isSuccess = true
+        state.successMessage = action.payload
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.isError = true
+        state.errorMessage = action.payload
       })
   }
 })

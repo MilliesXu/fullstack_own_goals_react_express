@@ -8,6 +8,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import VerifyPage from "./pages/VerifyPage";
 import ProfilePage from "./pages/ProfilePage";
+import RequestResetPassword from "./pages/RequestResetPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route path="/register" element={ <RegisterPage /> } />
             <Route path="/verify/:id/:verificationCode" element={ <VerifyPage /> } />
             <Route path="/profile" element={ <ProfilePage /> } />
+            <Route path="/requestResetPassword" element={ <RequestResetPassword /> } />
+            <Route path="/resetPassword/:id/:resetPasswordCode" element={ <ResetPassword /> } />
           </Routes>
         </div>
       </Router>

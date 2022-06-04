@@ -36,3 +36,18 @@ export const logoutService = async () => {
 
   return response.data
 }
+
+export const requestResetPasswordService = async (email) => {
+  const response = await axios.post('api/user/requestChangePassword', email)
+
+  return response.data
+}
+
+export const resetPasswordService = async (user) => {
+  const response = await axios.post(`/api/user/resetPassword/${user.id}/${user.resetPasswordCode}`, {
+    password: user.password,
+    passwordConfirmation: user.passwordConfirmation
+  })
+
+  return response.data
+}

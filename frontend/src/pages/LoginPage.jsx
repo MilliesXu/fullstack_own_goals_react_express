@@ -1,6 +1,7 @@
 import { useState, useEffect, Suspense } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { login, reset } from "../features/auth/authSlice"
@@ -62,7 +63,9 @@ const LoginPage = () => {
             </div>
             <div className='flex flex-row items-center justify-between'>
               <button className="bg-blue-600 text-white p-2 px-5 font-bold text-lg hover:bg-blue-800" type="submit">Login</button>
-              <button className="text-blue-500 p-2 px-5 font-bold text-lg hover:text-blue-800" type="button">Forgot Password?</button>
+              <button className="text-blue-500 p-2 px-5 font-bold text-lg hover:text-blue-800" type="button">
+                <Link to="/requestResetPassword">{'Forgot Password?'}</Link>
+              </button>
             </div>
           </form>
         </div>

@@ -79,7 +79,12 @@ export const updateUserHandler = async (req: Request<{}, {}, UpdateUserInput>, r
     const user = await findUserById(res.locals.user.userId)
     const userUpdated = await updateUser(user._id, body)
 
-    res.send(omit(userUpdated.toJSON(), userPrivateFields))
+    res.send({
+      firstname: userUpdated.firstname,
+      lastname: userUpdated.lastname,
+      email: userUpdated.email,
+      verified: userUpdated.verified
+    })
   } catch (error: any) {
     if (error.code === 11000) next(new MyError('Email is already been used', 403))
 
@@ -107,7 +112,7 @@ export const requestChangePasswordHandler = async (req: Request<{}, {}, RequestC
       from: 'test@email.com',
       to: userUpdated.email,
       subject: 'Please verify your account',
-      text: `Password Reset Code ${userUpdated.passwordResetCode}, Id : ${userUpdated._id}`
+      text: `http://127.0.0.1:3000/resetPassword/${userUpdated._id}/${userUpdated.passwordResetCode}`
     })
 
     return res.send({
